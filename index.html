@@ -153,10 +153,6 @@
       font-size: clamp(22px, 2.7vw, 34px);
       letter-spacing:-.2px;
     }
-    .section p{
-      margin:0;color:var(--muted);line-height:1.65;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
 
     /* Slider */
     .slider-card{padding:0}
@@ -164,7 +160,6 @@
       display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px;
       padding:18px 18px 0;
     }
-    input[type="file"]{display:none}
     .slider{padding:14px 18px 18px}
     .track{
       display:flex;gap:14px;overflow-x:auto;
@@ -219,7 +214,7 @@
       transform: scale(1.25);
     }
 
-    /* Hearts (emoji 💖) */
+    /* Hearts */
     .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
     .heart{
       position:absolute;
@@ -244,7 +239,6 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
 
-    /* On-card image error box */
     .img-err{
       height:100%;
       display:grid;
@@ -322,12 +316,8 @@
 
       <div class="card slider-card section" style="margin-top:14px">
         <div class="slider-head">
-          <div class="controls" style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="ghost" id="prev" type="button">← Prev</button>
-            <button class="ghost" id="next" type="button">Next →</button>
-            <label class="ghost" for="uploader" style="display:inline-flex;align-items:center;gap:8px">⬆ Upload Photos</label>
-            <input id="uploader" type="file" accept="image/*" multiple />
-          </div>
+          <button class="ghost" id="prev" type="button">← Prev</button>
+          <button class="ghost" id="next" type="button">Next →</button>
         </div>
 
         <div class="slider">
@@ -351,7 +341,6 @@
 
   <script>
     const CONFIG = {
-      names: "Cristian & Daniela",
       oneYearAnniversary: "2025-02-25",
       relationshipStart: "2024-02-25",
 
@@ -377,7 +366,6 @@
     const $ = (s) => document.querySelector(s);
     const track = $("#track");
     const dots = $("#dots");
-    const uploader = $("#uploader");
     const heartsLayer = $("#hearts");
 
     let slides = [...CONFIG.slides];
@@ -392,9 +380,6 @@
     }
 
     function setText(){
-      const titleEl = $("#title");
-      if(titleEl) titleEl.textContent = "Happy 1 Year ✨";
-
       $("#subtitle").textContent = CONFIG.subtitle;
       $("#lineText").textContent = CONFIG.line;
       $("#note").textContent = CONFIG.note;
@@ -570,22 +555,6 @@
         setActiveDot(getCurrentIndex());
         raf = null;
       });
-    });
-
-    uploader.addEventListener("change", (e) => {
-      const files = [...(e.target.files || [])];
-      if(!files.length) return;
-
-      const newSlides = files.map((f) => ({
-        src: URL.createObjectURL(f),
-        title: f.name.replace(/\.[^/.]+$/, ""),
-        desc: "Uploaded photo"
-      }));
-
-      slides = slides.concat(newSlides);
-      render();
-      scrollToIndex(slides.length - newSlides.length);
-      uploader.value = "";
     });
 
     $("#next").addEventListener("click", next);
