@@ -8,15 +8,15 @@
 
   <style>
     @font-face{
-      font-family: "Faith";
-      src: url("./Faith.ttf") format("truetype");
+      font-family: "Pastel Trunk";
+      src: url("./Pastel%20Trunk.ttf") format("truetype");
       font-display: swap;
     }
 
-    /* Faith font for the bottom romantic section (font-family name changed to "Faith") */
+    /* Faith font for the romantic section */
     @font-face{
       font-family: "Faith";
-      src: url("./Faith") format("truetype");
+      src: url("./Faith%20Family.ttf") format("truetype");
       font-display: swap;
     }
 
@@ -440,15 +440,18 @@
       color: rgba(255,255,255,.98);
     }
 
+    /* FIXED: poem now uses Faith font too */
     .faith-part .faith-poem{
       margin: 10px auto 14px;
       max-width: 860px;
       text-align:center;
-      font-size: 17px;
-      line-height: 1.9;
-      color: rgba(217,217,230,.94);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-size: clamp(20px, 2.2vw, 28px);
+      line-height: 1.45;
+      color: rgba(217,217,230,.96);
+      font-family: "Faith", cursive !important;
       text-wrap: pretty;
+      text-shadow: 0 4px 16px rgba(0,0,0,.20);
+      letter-spacing: .15px;
     }
 
     .faith-part .faith-poem-wrap{
@@ -474,8 +477,8 @@
 
     @media (max-width: 640px){
       .faith-part .faith-poem{
-        font-size: 15.5px;
-        line-height: 1.8;
+        font-size: clamp(17px, 4.8vw, 22px);
+        line-height: 1.4;
       }
       .faith-part .faith-poem-wrap{
         padding: 12px 12px 4px;
@@ -504,7 +507,7 @@
   <div class="topbar">
     <div class="brand">
       <div style="font-size:18px">💖</div>
-      <!-- Removed: Cristian & Daniela line -->
+      <!-- Removed Cristian & Daniela line -->
       <div class="badge" id="badge">Loading…</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
@@ -573,7 +576,6 @@
       </div>
     </section>
 
-    <!-- Elegant bottom section -->
     <div class="faith-part">
       <section class="section" style="margin-top:8px">
         <h2 class="faith-script faith-section-title">One year down…</h2>
@@ -895,7 +897,6 @@
           return;
         }
 
-        // Hosting can be slower; retry only on real error/no source
         timeoutId = setTimeout(() => {
           if (loadedOk) return;
           const noSource = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
