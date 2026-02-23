@@ -440,10 +440,10 @@
       color: rgba(255,255,255,.98);
     }
 
-    /* FIXED: poem now uses Faith font too */
+    /* Poem now uses Faith font and NO wrapper square */
     .faith-part .faith-poem{
       margin: 10px auto 14px;
-      max-width: 860px;
+      max-width: 900px;
       text-align:center;
       font-size: clamp(20px, 2.2vw, 28px);
       line-height: 1.45;
@@ -452,18 +452,6 @@
       text-wrap: pretty;
       text-shadow: 0 4px 16px rgba(0,0,0,.20);
       letter-spacing: .15px;
-    }
-
-    .faith-part .faith-poem-wrap{
-      position: relative;
-      margin: 8px auto 0;
-      padding: 14px 16px 6px;
-      max-width: 940px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 12px 34px rgba(0,0,0,.18);
-      backdrop-filter: blur(6px);
     }
 
     .faith-part .faith-footer{
@@ -479,10 +467,6 @@
       .faith-part .faith-poem{
         font-size: clamp(17px, 4.8vw, 22px);
         line-height: 1.4;
-      }
-      .faith-part .faith-poem-wrap{
-        padding: 12px 12px 4px;
-        border-radius: 14px;
       }
     }
   </style>
@@ -586,18 +570,17 @@
         My sole promise is to be yours now and forever 💖✨
       </p>
 
-      <div class="faith-poem-wrap">
-        <p class="faith-poem">
-          Some nights the distance is loud, and I cry into the dark,<br>
-          missing your hands, your voice, the calm inside my heart.<br>
-          We’ve had our ups and downs, our storms we had to face<br>
-          yet every fall reminds me you’re still my safest place.<br><br>
-          So we hold on through the hard, one “goodnight” at a time,<br>
-          turning miles into a promise, turning pain into a sign:<br>
-          the happiness is coming—soft, steady, and true,<br>
-          and every road leads forward… until I’m next to you. 💖
-        </p>
-      </div>
+      <!-- No more faith-poem-wrap square -->
+      <p class="faith-poem">
+        Some nights the distance is loud, and I cry into the dark,<br>
+        missing your hands, your voice, the calm inside my heart.<br>
+        We’ve had our ups and downs, our storms we had to face<br>
+        yet every fall reminds me you’re still my safest place.<br><br>
+        So we hold on through the hard, one “goodnight” at a time,<br>
+        turning miles into a promise, turning pain into a sign:<br>
+        the happiness is coming—soft, steady, and true,<br>
+        and every road leads forward… until I’m next to you. 💖
+      </p>
 
       <footer class="faith-footer">Made with love ❤️</footer>
     </div>
