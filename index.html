@@ -8,15 +8,15 @@
 
   <style>
     @font-face{
-      font-family: "Pastel Trunk";
-      src: url("./Pastel%20Trunk.ttf") format("truetype");
+      font-family: "Faith";
+      src: url("./Faith.ttf") format("truetype");
       font-display: swap;
     }
 
-    /* Faith font for the bottom romantic section */
+    /* Faith font for the bottom romantic section (font-family name changed to "Faith") */
     @font-face{
       font-family: "Faith";
-      src: url("./Faith.ttf") format("truetype");
+      src: url("./Faith") format("truetype");
       font-display: swap;
     }
 
@@ -278,7 +278,7 @@
       pointer-events:none;
     }
 
-    /* FIXED: video captions stay at the bottom */
+    /* video captions stay at the bottom */
     .cap.video-cap{
       top:auto;
       bottom:12px;
@@ -384,10 +384,103 @@
     .img-err .big{font-weight:900;margin-bottom:6px}
     .img-err .path{opacity:.8;font-size:13px;word-break:break-all}
 
-    /* Faith font only for the requested bottom section */
-    .faith-part,
-    .faith-part *{
+    /* Elegant romantic bottom section */
+    .faith-part{
+      margin-top: 18px;
+      padding: 18px 10px 6px;
+      position: relative;
+    }
+
+    .faith-part::before{
+      content:"";
+      display:block;
+      width:min(220px, 55%);
+      height:1px;
+      margin: 0 auto 16px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        rgba(255,119,183,.45),
+        rgba(123,220,255,.45),
+        rgba(255,255,255,.25),
+        transparent
+      );
+      box-shadow: 0 0 18px rgba(255,119,183,.18);
+    }
+
+    .faith-part .faith-script{
       font-family: "Faith", cursive !important;
+      text-shadow: 0 6px 20px rgba(0,0,0,.28);
+      letter-spacing: .2px;
+    }
+
+    .faith-part .faith-section-title{
+      text-align:center;
+      margin: 0 0 6px;
+      font-size: clamp(26px, 3.4vw, 40px);
+      line-height: 1.15;
+    }
+
+    .faith-part .faith-closing{
+      text-align:center;
+      margin: 0 auto;
+      max-width: 820px;
+      color: rgba(247,247,251,.92);
+      font-size: clamp(18px, 2.1vw, 24px);
+      line-height: 1.35;
+    }
+
+    .faith-part .faith-promise{
+      margin: 22px auto 12px;
+      text-align:center;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.2;
+      max-width: 900px;
+      color: rgba(255,255,255,.98);
+    }
+
+    .faith-part .faith-poem{
+      margin: 10px auto 14px;
+      max-width: 860px;
+      text-align:center;
+      font-size: 17px;
+      line-height: 1.9;
+      color: rgba(217,217,230,.94);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      text-wrap: pretty;
+    }
+
+    .faith-part .faith-poem-wrap{
+      position: relative;
+      margin: 8px auto 0;
+      padding: 14px 16px 6px;
+      max-width: 940px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: 0 12px 34px rgba(0,0,0,.18);
+      backdrop-filter: blur(6px);
+    }
+
+    .faith-part .faith-footer{
+      margin-top: 12px;
+      text-align:center;
+      color: rgba(217,217,230,.85);
+      font-size: 14px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      letter-spacing: .2px;
+    }
+
+    @media (max-width: 640px){
+      .faith-part .faith-poem{
+        font-size: 15.5px;
+        line-height: 1.8;
+      }
+      .faith-part .faith-poem-wrap{
+        padding: 12px 12px 4px;
+        border-radius: 14px;
+      }
     }
   </style>
 </head>
@@ -411,6 +504,7 @@
   <div class="topbar">
     <div class="brand">
       <div style="font-size:18px">💖</div>
+      <!-- Removed: Cristian & Daniela line -->
       <div class="badge" id="badge">Loading…</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
@@ -479,29 +573,31 @@
       </div>
     </section>
 
-    <!-- Faith font only for this requested part -->
+    <!-- Elegant bottom section -->
     <div class="faith-part">
-      <section class="section">
-        <h2>One year down…</h2>
-        <p id="closing">…a lifetime to go. Same team, same love, forever.</p>
+      <section class="section" style="margin-top:8px">
+        <h2 class="faith-script faith-section-title">One year down…</h2>
+        <p id="closing" class="faith-script faith-closing">…a lifetime to go. Same team, same love, forever.</p>
       </section>
 
-      <p style="margin:22px 0 10px; text-align:center; font-size:28px; line-height:1.2;">
+      <p class="faith-script faith-promise">
         My sole promise is to be yours now and forever 💖✨
       </p>
 
-      <p style="margin:10px auto 14px; max-width:820px; text-align:center; font-size:16px; line-height:1.7; color:rgba(217,217,230,.92);">
-        Some nights the distance is loud, and I cry into the dark,<br>
-        missing your hands, your voice, the calm inside my heart.<br>
-        We’ve had our ups and downs, our storms we had to face<br>
-        yet every fall reminds me you’re still my safest place.<br><br>
-        So we hold on through the hard, one “goodnight” at a time,<br>
-        turning miles into a promise, turning pain into a sign:<br>
-        the happiness is coming—soft, steady, and true,<br>
-        and every road leads forward… until I’m next to you. 💖
-      </p>
+      <div class="faith-poem-wrap">
+        <p class="faith-poem">
+          Some nights the distance is loud, and I cry into the dark,<br>
+          missing your hands, your voice, the calm inside my heart.<br>
+          We’ve had our ups and downs, our storms we had to face<br>
+          yet every fall reminds me you’re still my safest place.<br><br>
+          So we hold on through the hard, one “goodnight” at a time,<br>
+          turning miles into a promise, turning pain into a sign:<br>
+          the happiness is coming—soft, steady, and true,<br>
+          and every road leads forward… until I’m next to you. 💖
+        </p>
+      </div>
 
-      <footer>Made with love ❤️</footer>
+      <footer class="faith-footer">Made with love ❤️</footer>
     </div>
   </main>
 
@@ -640,7 +736,7 @@
       if (ext === "webm") return "video/webm";
       if (ext === "ogg" || ext === "ogv") return "video/ogg";
       if (ext === "mov") return "video/quicktime";
-      return "video/mp4"; // mp4, m4v
+      return "video/mp4";
     }
 
     function buildImageCandidates(src){
@@ -726,7 +822,6 @@
       video.setAttribute("playsinline", "");
       video.setAttribute("webkit-playsinline", "");
 
-      // no autoplay with sound (browsers block it). user can play manually.
       video.muted = false;
       applyVideoVolume(video);
 
@@ -800,18 +895,15 @@
           return;
         }
 
-        // Hosting can be slow. Retry only on actual errors / no source.
+        // Hosting can be slower; retry only on real error/no source
         timeoutId = setTimeout(() => {
           if (loadedOk) return;
-
           const noSource = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
           if (video.error || noSource) {
             trying = false;
             tryNextVideo();
             return;
           }
-
-          // still loading -> let it continue
           trying = false;
         }, 12000);
 
@@ -886,7 +978,6 @@
 
       const mediaEl = createMediaElement(slide, index, card);
 
-      // media creation may have already replaced card content on error
       if (card.children.length === 0) {
         card.appendChild(mediaEl);
 
@@ -1006,7 +1097,6 @@
     $("#pause").addEventListener("click", stop);
     $("#scrollToPhotos").addEventListener("click", () => $("#photos").scrollIntoView({behavior:"smooth"}));
 
-    // Music start on first interaction
     ["click", "touchstart", "keydown"].forEach(evt => {
       document.addEventListener(evt, startMusicOnce, { passive: true });
     });
@@ -1032,7 +1122,6 @@
       });
     }
 
-    // Hearts
     function spawnHeart(){
       if(!heartsOn) return;
 
