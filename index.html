@@ -13,6 +13,13 @@
       font-display: swap;
     }
 
+    /* Faith font for the bottom romantic section */
+    @font-face{
+      font-family: "Faith";
+      src: url("./Faith.ttf") format("truetype");
+      font-display: swap;
+    }
+
     :root{
       --bg1:#0b1020;
       --bg2:#1a0f2e;
@@ -270,12 +277,15 @@
       z-index:2;
       pointer-events:none;
     }
+
+    /* FIXED: video captions stay at the bottom */
     .cap.video-cap{
       top:auto;
       bottom:12px;
       background: linear-gradient(180deg, transparent, rgba(0,0,0,.62));
       padding:16px 14px 12px;
-    }   
+    }
+
     .cap .t{margin:0;font-weight:900}
     .cap .d{
       margin:4px 0 0;color:rgba(255,255,255,.85);font-size:13px;line-height:1.35;
@@ -373,6 +383,12 @@
     }
     .img-err .big{font-weight:900;margin-bottom:6px}
     .img-err .path{opacity:.8;font-size:13px;word-break:break-all}
+
+    /* Faith font only for the requested bottom section */
+    .faith-part,
+    .faith-part *{
+      font-family: "Faith", cursive !important;
+    }
   </style>
 </head>
 
@@ -395,7 +411,6 @@
   <div class="topbar">
     <div class="brand">
       <div style="font-size:18px">💖</div>
-      <div>Cristian & Daniela</div>
       <div class="badge" id="badge">Loading…</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
@@ -464,27 +479,30 @@
       </div>
     </section>
 
-    <section class="section">
-      <h2>One year down…</h2>
-      <p id="closing">…a lifetime to go. Same team, same love, forever.</p>
-    </section>
+    <!-- Faith font only for this requested part -->
+    <div class="faith-part">
+      <section class="section">
+        <h2>One year down…</h2>
+        <p id="closing">…a lifetime to go. Same team, same love, forever.</p>
+      </section>
 
-    <p style="margin:22px 0 10px; text-align:center; font-size:28px; line-height:1.2;">
-      My sole promise is to be yours now and forever 💖✨
-    </p>
+      <p style="margin:22px 0 10px; text-align:center; font-size:28px; line-height:1.2;">
+        My sole promise is to be yours now and forever 💖✨
+      </p>
 
-    <p style="margin:10px auto 14px; max-width:820px; text-align:center; font-size:16px; line-height:1.7; color:rgba(217,217,230,.92); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;">
-      Some nights the distance is loud, and I cry into the dark,<br>
-      missing your hands, your voice, the calm inside my heart.<br>
-      We’ve had our ups and downs, our storms we had to face<br>
-      yet every fall reminds me you’re still my safest place.<br><br>
-      So we hold on through the hard, one “goodnight” at a time,<br>
-      turning miles into a promise, turning pain into a sign:<br>
-      the happiness is coming—soft, steady, and true,<br>
-      and every road leads forward… until I’m next to you. 💖
-    </p>
+      <p style="margin:10px auto 14px; max-width:820px; text-align:center; font-size:16px; line-height:1.7; color:rgba(217,217,230,.92);">
+        Some nights the distance is loud, and I cry into the dark,<br>
+        missing your hands, your voice, the calm inside my heart.<br>
+        We’ve had our ups and downs, our storms we had to face<br>
+        yet every fall reminds me you’re still my safest place.<br><br>
+        So we hold on through the hard, one “goodnight” at a time,<br>
+        turning miles into a promise, turning pain into a sign:<br>
+        the happiness is coming—soft, steady, and true,<br>
+        and every road leads forward… until I’m next to you. 💖
+      </p>
 
-    <footer>Made with love ❤️</footer>
+      <footer>Made with love ❤️</footer>
+    </div>
   </main>
 
   <script>
@@ -757,7 +775,6 @@
 
         const candidate = candidates[idx++];
 
-        // Clear previous source safely
         try { video.pause(); } catch(e) {}
         video.removeAttribute("src");
         while (video.firstChild) video.removeChild(video.firstChild);
@@ -783,9 +800,7 @@
           return;
         }
 
-        // IMPORTANT FIX:
-        // On Netlify / slow connections, metadata may take >2.5s.
-        // Only retry when there is an actual error / no source.
+        // Hosting can be slow. Retry only on actual errors / no source.
         timeoutId = setTimeout(() => {
           if (loadedOk) return;
 
@@ -796,18 +811,8 @@
             return;
           }
 
-          // Still loading normally -> keep waiting
-          timeoutId = setTimeout(() => {
-            if (!loadedOk) {
-              const noSourceLater = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
-              if (video.error || noSourceLater) {
-                trying = false;
-                tryNextVideo();
-              } else {
-                trying = false;
-              }
-            }
-          }, 12000);
+          // still loading -> let it continue
+          trying = false;
         }, 12000);
 
         trying = false;
