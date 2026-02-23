@@ -558,7 +558,7 @@
         { src: "./IMG6.JPEG", title: "One year down, forever loading…", desc: "Same vibe: you, me, and a lifetime of ‘look at us’ moments." },
         { src: "./IMG7.JPEG", title: "Floor nap, cat approved", desc: "You fell asleep on the floor, the cat clocked in as your tiny bodyguard, and somehow it became the cutest scene I’ve ever seen." },
 
-        /* ✅ videos */
+        /* videos */
         { src: "./VID1.MP4", type: "video", title: "Pillow storm warning", desc: "One couch pillow, one dramatic wind blast, and one very adorable menace. I swear even chaos looks soft when it’s you." },
         { src: "./VID2.MP4", type: "video", title: "Sad face, soft heart", desc: "She tried the serious/sad face… but we all knew the truth: she absolutely adores him. 0% fooled us, 100% stole our hearts." }
       ],
@@ -716,6 +716,7 @@
       let idx = 0;
       let loadedOk = false;
       let timeoutId = null;
+      let trying = false;
 
       const cleanupTimeout = () => {
         if (timeoutId) {
@@ -738,40 +739,78 @@
       }
 
       function tryNextVideo(){
+        if (trying) return;
+        trying = true;
+
         cleanupTimeout();
 
-        if (loadedOk) return;
+        if (loadedOk) {
+          trying = false;
+          return;
+        }
+
         if (idx >= candidates.length){
+          trying = false;
           showVideoError();
           return;
         }
 
         const candidate = candidates[idx++];
-        loadedOk = false;
 
-        // clear previous source safely
-        video.pause();
+        // Clear previous source safely
+        try { video.pause(); } catch(e) {}
         video.removeAttribute("src");
         while (video.firstChild) video.removeChild(video.firstChild);
 
         const source = document.createElement("source");
         source.src = candidate;
         source.type = getVideoMime(candidate);
+
         source.onerror = () => {
-          if (!loadedOk) tryNextVideo();
+          if (!loadedOk) {
+            trying = false;
+            tryNextVideo();
+          }
         };
 
         video.appendChild(source);
 
-        // try loading this candidate
-        video.load();
+        try {
+          video.load();
+        } catch (e) {
+          trying = false;
+          tryNextVideo();
+          return;
+        }
 
-        // Some browsers don't fire a clean error for all failures; timeout fallback helps
+        // IMPORTANT FIX:
+        // On Netlify / slow connections, metadata may take >2.5s.
+        // Only retry when there is an actual error / no source.
         timeoutId = setTimeout(() => {
-          if (!loadedOk && video.readyState === 0) {
+          if (loadedOk) return;
+
+          const noSource = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
+          if (video.error || noSource) {
+            trying = false;
             tryNextVideo();
+            return;
           }
-        }, 2500);
+
+          // Still loading normally -> keep waiting
+          timeoutId = setTimeout(() => {
+            if (!loadedOk) {
+              const noSourceLater = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
+              if (video.error || noSourceLater) {
+                trying = false;
+                tryNextVideo();
+              } else {
+                trying = false;
+              }
+            }
+          }, 12000);
+        }, 12000);
+
+        trying = false;
       }
 
       video.addEventListener("loadedmetadata", () => {
