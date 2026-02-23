@@ -34,7 +34,6 @@
       margin:0;
       font-family: "Pastel Trunk", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
-      /* fallback if background video doesn't load */
       background: linear-gradient(135deg, #080d18 0%, #120a24 35%, #20113b 68%, #0b1020 100%);
       overflow-x:hidden;
       position:relative;
@@ -69,7 +68,6 @@
         linear-gradient(180deg, rgba(7,10,18,.42), rgba(7,10,18,.70));
     }
 
-    /* subtle sparkle layer */
     body::before{
       content:"";
       position:fixed;
@@ -270,6 +268,7 @@
       border:1px solid rgba(255,255,255,.10);
       backdrop-filter: blur(8px);
       z-index:2;
+      pointer-events:none;
     }
     .cap.video-cap{
       top:12px;
@@ -396,6 +395,7 @@
   <div class="topbar">
     <div class="brand">
       <div style="font-size:18px">💖</div>
+      <div>Cristian & Daniela</div>
       <div class="badge" id="badge">Loading…</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
@@ -496,6 +496,9 @@
       const revealBg = () => bgVideoEl.classList.add("is-ready");
       bgVideoEl.addEventListener("canplay", revealBg, { once:true });
       bgVideoEl.addEventListener("loadeddata", revealBg, { once:true });
+      bgVideoEl.addEventListener("error", () => {
+        // fallback gradient remains visible
+      });
     }
 
     // Music
@@ -554,6 +557,8 @@
         { src: "./IMG5.JPEG", title: "Steal my shirt, steal my heart", desc: "You took my shirt… I took the hint. Now you have both." },
         { src: "./IMG6.JPEG", title: "One year down, forever loading…", desc: "Same vibe: you, me, and a lifetime of ‘look at us’ moments." },
         { src: "./IMG7.JPEG", title: "Floor nap, cat approved", desc: "You fell asleep on the floor, the cat clocked in as your tiny bodyguard, and somehow it became the cutest scene I’ve ever seen." },
+
+        /* ✅ videos */
         { src: "./VID1.MP4", type: "video", title: "Pillow storm warning", desc: "One couch pillow, one dramatic wind blast, and one very adorable menace. I swear even chaos looks soft when it’s you." },
         { src: "./VID2.MP4", type: "video", title: "Sad face, soft heart", desc: "She tried the serious/sad face… but we all knew the truth: she absolutely adores him. 0% fooled us, 100% stole our hearts." }
       ],
@@ -607,12 +612,20 @@
     }
 
     function inferMediaType(slide){
-      if (slide?.type) return slide.type;
+      if (slide?.type) return String(slide.type).toLowerCase();
       const src = String(slide?.src || "").toLowerCase();
       return /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/.test(src) ? "video" : "image";
     }
 
-    function buildMediaCandidates(src){
+    function getVideoMime(src){
+      const ext = (String(src).split("?")[0].split("#")[0].split(".").pop() || "").toLowerCase();
+      if (ext === "webm") return "video/webm";
+      if (ext === "ogg" || ext === "ogv") return "video/ogg";
+      if (ext === "mov") return "video/quicktime";
+      return "video/mp4"; // mp4, m4v
+    }
+
+    function buildImageCandidates(src){
       const set = new Set();
       const raw = String(src || "").trim();
       const add = (s) => { if (s) set.add(s); };
@@ -634,8 +647,42 @@
 
         if (ext === "jpeg") ["jpg","JPG","JPEG","jpeg"].forEach(e => alts.add(e));
         if (ext === "jpg") ["jpeg","JPEG","JPG","jpg"].forEach(e => alts.add(e));
-        if (ext === "mp4") ["MP4","m4v","M4V","mov","MOV","webm","WEBM"].forEach(e => alts.add(e));
+
+        for (const e of alts){
+          add(`${base}.${e}`);
+          add(`./${base}.${e}`);
+          add(`${base}.${e}`.replace(/ /g, "%20"));
+          add(`./${base}.${e}`.replace(/ /g, "%20"));
+        }
+      }
+
+      return Array.from(set);
+    }
+
+    function buildVideoCandidates(src){
+      const set = new Set();
+      const raw = String(src || "").trim();
+      const add = (s) => { if (s) set.add(s); };
+
+      add(raw);
+      add("./" + raw.replace(/^\.\//, ""));
+      add(raw.replace(/^\.\//, ""));
+      add(raw.replace(/ /g, "%20"));
+      add("./" + raw.replace(/^\.\//, "").replace(/ /g, "%20"));
+
+      const noPrefix = raw.replace(/^\.\//, "");
+      const m = noPrefix.match(/^(.*)\.([^.]+)$/);
+
+      if (m){
+        const base = m[1];
+        const extRaw = m[2];
+        const ext = extRaw.toLowerCase();
+        const alts = new Set([extRaw, ext, extRaw.toUpperCase()]);
+
+        if (ext === "mp4") ["MP4","m4v","M4V","mov","MOV"].forEach(e => alts.add(e));
+        if (ext === "m4v") ["M4V","mp4","MP4"].forEach(e => alts.add(e));
         if (ext === "mov") ["MOV","mp4","MP4"].forEach(e => alts.add(e));
+        if (ext === "webm") ["WEBM","mp4","MP4"].forEach(e => alts.add(e));
 
         for (const e of alts){
           add(`${base}.${e}`);
@@ -652,47 +699,115 @@
       try { videoEl.volume = 0.25; } catch(e) {}
     }
 
-    function createMediaElement(slide, index, card){
-      const type = inferMediaType(slide);
-      const candidates = buildMediaCandidates(slide.src);
-      let i = 0;
+    function createVideoElement(slide, card){
+      const video = document.createElement("video");
+      video.controls = true;
+      video.preload = "metadata";
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
 
-      if (type === "video"){
-        const video = document.createElement("video");
-        video.controls = true;
-        video.playsInline = true;
-        video.preload = "metadata";
-        video.loop = true;
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
+      // no autoplay with sound (browsers block it). user can play manually.
+      video.muted = false;
+      applyVideoVolume(video);
 
-        video.addEventListener("loadedmetadata", () => applyVideoVolume(video));
-        video.addEventListener("play", () => applyVideoVolume(video));
+      const candidates = buildVideoCandidates(slide.src);
+      let idx = 0;
+      let loadedOk = false;
+      let timeoutId = null;
 
-        function tryNextVideo(){
-          if (i >= candidates.length){
-            card.innerHTML = `
-              <div class="img-err">
-                <div>
-                  <div class="big">Video not found</div>
-                  <div class="path">${escapeHtml(String(slide.src))}</div>
-                </div>
-              </div>
-            `;
-            return;
-          }
-          video.src = candidates[i++];
-          video.load();
+      const cleanupTimeout = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
         }
+      };
 
-        video.onerror = tryNextVideo;
-        tryNextVideo();
-        return video;
+      function showVideoError(){
+        cleanupTimeout();
+        card.innerHTML = `
+          <div class="img-err">
+            <div>
+              <div class="big">Video not found / unsupported</div>
+              <div class="path">${escapeHtml(String(slide.src))}</div>
+              <div class="path" style="margin-top:8px;opacity:.7">If the file exists, it may need H.264/AAC encoding.</div>
+            </div>
+          </div>
+        `;
       }
 
+      function tryNextVideo(){
+        cleanupTimeout();
+
+        if (loadedOk) return;
+        if (idx >= candidates.length){
+          showVideoError();
+          return;
+        }
+
+        const candidate = candidates[idx++];
+        loadedOk = false;
+
+        // clear previous source safely
+        video.pause();
+        video.removeAttribute("src");
+        while (video.firstChild) video.removeChild(video.firstChild);
+
+        const source = document.createElement("source");
+        source.src = candidate;
+        source.type = getVideoMime(candidate);
+        source.onerror = () => {
+          if (!loadedOk) tryNextVideo();
+        };
+
+        video.appendChild(source);
+
+        // try loading this candidate
+        video.load();
+
+        // Some browsers don't fire a clean error for all failures; timeout fallback helps
+        timeoutId = setTimeout(() => {
+          if (!loadedOk && video.readyState === 0) {
+            tryNextVideo();
+          }
+        }, 2500);
+      }
+
+      video.addEventListener("loadedmetadata", () => {
+        loadedOk = true;
+        cleanupTimeout();
+        applyVideoVolume(video);
+      });
+
+      video.addEventListener("loadeddata", () => {
+        loadedOk = true;
+        cleanupTimeout();
+        applyVideoVolume(video);
+      });
+
+      video.addEventListener("canplay", () => {
+        loadedOk = true;
+        cleanupTimeout();
+      });
+
+      video.addEventListener("play", () => applyVideoVolume(video));
+
+      video.addEventListener("error", () => {
+        if (!loadedOk) tryNextVideo();
+      });
+
+      tryNextVideo();
+      return video;
+    }
+
+    function createImageElement(slide, index, card){
       const img = document.createElement("img");
       img.loading = "lazy";
       img.alt = slide.title || ("Photo " + (index+1));
+
+      const candidates = buildImageCandidates(slide.src);
+      let i = 0;
 
       function tryNextImage(){
         if (i >= candidates.length){
@@ -714,6 +829,12 @@
       return img;
     }
 
+    function createMediaElement(slide, index, card){
+      return inferMediaType(slide) === "video"
+        ? createVideoElement(slide, card)
+        : createImageElement(slide, index, card);
+    }
+
     function createSlideCard(slide, index){
       const card = document.createElement("div");
       card.className = "slide";
@@ -721,15 +842,19 @@
 
       const mediaEl = createMediaElement(slide, index, card);
 
-      const cap = document.createElement("div");
-      cap.className = "cap" + (inferMediaType(slide) === "video" ? " video-cap" : "");
-      cap.innerHTML = `
-        <p class="t">${escapeHtml(slide.title || "Memory " + (index+1))}</p>
-        <p class="d">${escapeHtml(slide.desc || "")}</p>
-      `;
+      // media creation may have already replaced card content on error
+      if (card.children.length === 0) {
+        card.appendChild(mediaEl);
 
-      card.appendChild(mediaEl);
-      card.appendChild(cap);
+        const cap = document.createElement("div");
+        cap.className = "cap" + (inferMediaType(slide) === "video" ? " video-cap" : "");
+        cap.innerHTML = `
+          <p class="t">${escapeHtml(slide.title || "Memory " + (index+1))}</p>
+          <p class="d">${escapeHtml(slide.desc || "")}</p>
+        `;
+        card.appendChild(cap);
+      }
+
       return card;
     }
 
@@ -907,5 +1032,4 @@
     updateMusicButton();
   </script>
 </body>
-
 </html>
