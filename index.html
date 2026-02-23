@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>1 Year</title>
+  <title>Cristian & Daniela — 1 Year</title>
   <meta name="description" content="Our 1-year anniversary page." />
 
   <style>
-    /* ✅ FONT: one file only (handles both "ValentineRose.ttf" and "Valentine Rose.ttf") */
+    /* ✅ FONT: one file only (supports both possible filenames) */
     @font-face{
       font-family: "Valentine Rose";
       src:
@@ -224,26 +224,28 @@
       transform: scale(1.25);
     }
 
-    /* Hearts */
+    /* Hearts (emoji 💖) */
     .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5}
     .heart{
-      position:absolute;width:14px;height:14px;transform: rotate(45deg);
-      opacity:.18;background: rgba(255,119,183,.9);
+      position:absolute;
+      opacity:.22;
       animation: floatUp linear forwards;
+      will-change: transform, opacity;
+      user-select:none;
+      font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+      filter: drop-shadow(0 0 16px rgba(255,119,183,.22));
     }
-    .heart::before,.heart::after{
-      content:"";position:absolute;width:14px;height:14px;border-radius:50%;background: inherit;
-    }
-    .heart::before{left:-7px;top:0}
-    .heart::after{left:0;top:-7px}
     @keyframes floatUp{
-      from{transform: translateY(20px) rotate(45deg); opacity:0}
-      10%{opacity:.22}
-      to{transform: translateY(-120vh) rotate(45deg); opacity:0}
+      from{ transform: translate(var(--dx, 0px), 20px) rotate(0deg); opacity:0; }
+      10%{ opacity:.22; }
+      to{ transform: translate(var(--dx, 0px), -120vh) rotate(var(--rot, 10deg)); opacity:0; }
     }
 
     footer{
-      margin-top:26px;color:var(--muted);font-size:13px;text-align:center;
+      margin-top:0;
+      color:var(--muted);
+      font-size:13px;
+      text-align:center;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .small{
@@ -287,6 +289,7 @@
         <div class="spark"></div>
         <div class="card-inner">
           <h1 class="h1" id="title">Happy 1 Year ✨</h1>
+
           <p class="sub" id="subtitle">
             One year of us — the laughs, the late nights, the little moments that became everything.
           </p>
@@ -323,14 +326,13 @@
               More adventures, more patience, more laughs — and yes, I’ll still hold your hand in public.
             </p>
           </div>
-          <!-- ✅ Tonight's plan removed -->
         </div>
       </div>
     </section>
 
     <section class="section" id="photos">
       <h2>Memory Roll</h2>
-   
+      <p>Swipe/scroll through the photos. Use arrows, dots, or auto-play.</p>
 
       <div class="card slider-card section" style="margin-top:14px">
         <div class="slider-head">
@@ -354,23 +356,20 @@
       <h2>One year down…</h2>
       <p id="closing">…a lifetime to go. Same team, same love, forever.</p>
     </section>
+
     <p style="margin:22px 0 10px; text-align:center; font-size:28px; line-height:1.2;">
-  My sole promise is to be yours 💖✨
-</p>
+      My sole promise is to be yours 💖✨
+    </p>
 
     <footer>Made with love ❤️</footer>
   </main>
 
   <script>
-    /***********************
-     * CONFIG (EDIT THIS)  *
-     ***********************/
     const CONFIG = {
       names: "Cristian & Daniela",
       oneYearAnniversary: "2025-02-25",
       relationshipStart: "2024-02-25",
 
-      title: "Happy 1 Year, {names} ✨",
       subtitle: "One year of us — the laughs, the late nights, the little moments that became everything.",
       line: "One year, infinite memories",
 
@@ -378,26 +377,23 @@
       promise: "More adventures, more patience, more laughs — and yes, I’ll still hold your hand in public.",
       closing: "…a lifetime to go. Same team, same love, forever.",
 
-      // ✅ Your images (same folder as index.html)
       slides: [
-        { src: "IMG1.JPEG", title: "Proof we’re adorable", desc: "Day 1: I fell. Day 365: still falling. (Send help… or kisses.)" },
-        { src: "IMG2.JPEG", title: "Main character energy", desc: "You + me = rom-com vibes with zero commercial breaks." },
-        { src: "IMG3.JPEG", title: "Certified chaos, politely", desc: "We’re the kind of love that laughs mid-argument and forgets why we started." },
-        { src: "IMG4.JPEG", title: "My favorite notification", desc: "Your name on my screen still hits like the first time. 🫶" },
-        { src: "IMG5.JPEG", title: "Steal my shirt, steal my heart", desc: "You took my shirt… I took the hint. Now you have both." },
-        { src: "IMG6.JPEG", title: "One year down, forever loading…", desc: "Same vibe: you, me, and a lifetime of ‘look at us’ moments." }
+        { src: "./IMG1.JPEG", title: "Proof we’re adorable", desc: "Day 1: I fell. Day 365: still falling. (Send help… or kisses.)" },
+        { src: "./IMG2.JPEG", title: "Main character energy", desc: "You + me = rom-com vibes with zero commercial breaks." },
+        { src: "./IMG3.JPEG", title: "Certified chaos, politely", desc: "We’re the kind of love that laughs mid-argument and forgets why we started." },
+        { src: "./IMG4.JPEG", title: "My favorite notification", desc: "Your name on my screen still hits like the first time. 🫶" },
+        { src: "./IMG5.JPEG", title: "Steal my shirt, steal my heart", desc: "You took my shirt… I took the hint. Now you have both." },
+        { src: "./IMG6.JPEG", title: "One year down, forever loading…", desc: "Same vibe: you, me, and a lifetime of ‘look at us’ moments." }
       ],
 
       autoplayMs: 3200
     };
 
-    /***********************
-     * APP CODE            *
-     ***********************/
     const $ = (s) => document.querySelector(s);
     const track = $("#track");
     const dots = $("#dots");
     const uploader = $("#uploader");
+    const heartsLayer = $("#hearts");
 
     let slides = [...CONFIG.slides];
     let autoplayTimer = null;
@@ -410,36 +406,30 @@
       return d.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
     }
 
-  function setText(){
-  // Title fixed
-  const titleEl = $("#title");
-  if (titleEl) titleEl.textContent = "Happy 1 Year ✨";
+    function setText(){
+      const titleEl = $("#title");
+      if(titleEl) titleEl.textContent = "Happy 1 Year ✨";
 
-  // Only set names if an element with id="names" exists somewhere
-  const namesEl = $("#names");
-  if (namesEl) namesEl.textContent = CONFIG.names;
+      $("#subtitle").textContent = CONFIG.subtitle;
+      $("#lineText").textContent = CONFIG.line;
+      $("#note").textContent = CONFIG.note;
+      $("#promise").textContent = CONFIG.promise;
+      $("#closing").textContent = CONFIG.closing;
 
-  $("#subtitle").textContent = CONFIG.subtitle;
-  $("#lineText").textContent = CONFIG.line;
+      $("#annivDateText").textContent = fmtDate(CONFIG.oneYearAnniversary);
 
-  $("#note").textContent = CONFIG.note;
-  $("#promise").textContent = CONFIG.promise;
-  $("#closing").textContent = CONFIG.closing;
+      const start = new Date(CONFIG.relationshipStart + "T00:00:00");
+      $("#badge").textContent = "Together since " + start.toLocaleDateString(undefined, { month:"short", year:"numeric" });
 
-  $("#annivDateText").textContent = fmtDate(CONFIG.oneYearAnniversary);
+      const oneYear = new Date(CONFIG.oneYearAnniversary + "T00:00:00");
+      const now = new Date();
 
-  const start = new Date(CONFIG.relationshipStart + "T00:00:00");
-  $("#badge").textContent = "Together since " + start.toLocaleDateString(undefined, { month:"short", year:"numeric" });
+      const firstYearDays = Math.round((oneYear - start) / msDay);
+      const elapsedDays = Math.max(0, Math.floor((now - start) / msDay));
+      const shownDays = Math.min(elapsedDays, firstYearDays);
 
-  const oneYear = new Date(CONFIG.oneYearAnniversary + "T00:00:00");
-  const now = new Date();
-
-  const firstYearDays = Math.round((oneYear - start) / msDay);
-  const elapsedDays = Math.max(0, Math.floor((now - start) / msDay));
-  const shownDays = Math.min(elapsedDays, firstYearDays);
-
-  $("#daysText").textContent = shownDays + " days of us";
-}
+      $("#daysText").textContent = shownDays + " days of us";
+    }
 
     function clearChildren(el){ while(el.firstChild) el.removeChild(el.firstChild); }
 
@@ -449,86 +439,81 @@
       }[m]));
     }
 
-    // ✅ Builds multiple filename candidates to fix common issues:
-    // - missing "./"
-    // - space vs %20
-    // - JPG/JPEG casing
-  function buildImageCandidates(src){
-  const set = new Set();
-  const raw = String(src || "").trim();
+    function buildImageCandidates(src){
+      const set = new Set();
+      const raw = String(src || "").trim();
+      const add = (s) => { if(s) set.add(s); };
 
-  const add = (s) => { if(s) set.add(s); };
+      add(raw);
+      add("./" + raw.replace(/^\.\//, ""));
+      add(raw.replace(/^\.\//, ""));
+      add(raw.replace(/ /g, "%20"));
+      add("./" + raw.replace(/^\.\//, "").replace(/ /g, "%20"));
 
-  add(raw);
-  add("./" + raw.replace(/^\.\//, ""));
-  add(raw.replace(/^\.\//, ""));
-  add(raw.replace(/ /g, "%20"));
-  add("./" + raw.replace(/^\.\//, "").replace(/ /g, "%20"));
+      const noPrefix = raw.replace(/^\.\//, "");
+      const m = noPrefix.match(/^(.*)\.([^.]+)$/);
+      if(m){
+        const base = m[1];
+        const ext = m[2].toLowerCase();
 
-  const noPrefix = raw.replace(/^\.\//, "");
-  const m = noPrefix.match(/^(.*)\.([^.]+)$/);
-  if(m){
-    const base = m[1];
-    const ext = m[2].toLowerCase();
+        const alts = new Set([m[2], ext, m[2].toUpperCase()]);
+        if(ext === "jpeg") ["jpg","JPG","JPEG","jpeg"].forEach(e => alts.add(e));
+        if(ext === "jpg") ["jpeg","JPEG","JPG","jpg"].forEach(e => alts.add(e));
 
-    const alts = new Set([m[2], ext, m[2].toUpperCase()]);
-    if(ext === "jpeg") ["jpg","JPG","JPEG","jpeg"].forEach(e => alts.add(e));
-    if(ext === "jpg") ["jpeg","JPEG","JPG","jpg"].forEach(e => alts.add(e));
-
-    for(const e of alts){
-      add(`${base}.${e}`);
-      add(`./${base}.${e}`);
-      add(`${base}.${e}`.replace(/ /g, "%20"));
-      add(`./${base}.${e}`.replace(/ /g, "%20"));
+        for(const e of alts){
+          add(`${base}.${e}`);
+          add(`./${base}.${e}`);
+          add(`${base}.${e}`.replace(/ /g, "%20"));
+          add(`./${base}.${e}`.replace(/ /g, "%20"));
+        }
+      }
+      return Array.from(set);
     }
-  }
-  return Array.from(set);
-}
 
     function createSlideCard(slide, index){
-  const card = document.createElement("div");
-  card.className = "slide";
-  card.setAttribute("data-index", String(index));
+      const card = document.createElement("div");
+      card.className = "slide";
+      card.setAttribute("data-index", String(index));
 
-  const img = document.createElement("img");
-  img.loading = "lazy";
-  img.alt = slide.title || ("Photo " + (index+1));
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.alt = slide.title || ("Photo " + (index+1));
 
-  const candidates = buildImageCandidates(slide.src);
-  let i = 0;
+      const candidates = buildImageCandidates(slide.src);
+      let i = 0;
 
-  function tryNext(){
-    if(i >= candidates.length){
-      card.innerHTML = `
-        <div class="img-err">
-          <div>
-            <div class="big">Image not found</div>
-            <div class="path">${escapeHtml(String(slide.src))}</div>
-            <div class="path" style="margin-top:10px;opacity:.75">
-              Make sure the file is in the same folder as index.html and the name matches exactly.
+      function tryNext(){
+        if(i >= candidates.length){
+          card.innerHTML = `
+            <div class="img-err">
+              <div>
+                <div class="big">Image not found</div>
+                <div class="path">${escapeHtml(String(slide.src))}</div>
+                <div class="path" style="margin-top:10px;opacity:.75">
+                  Make sure the file is in the same folder as index.html and the name matches exactly.
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          `;
+          return;
+        }
+        img.src = candidates[i++];
+      }
+
+      img.onerror = tryNext;
+      tryNext();
+
+      const cap = document.createElement("div");
+      cap.className = "cap";
+      cap.innerHTML = `
+        <p class="t">${escapeHtml(slide.title || "Memory " + (index+1))}</p>
+        <p class="d">${escapeHtml(slide.desc || "")}</p>
       `;
-      return;
+
+      card.appendChild(img);
+      card.appendChild(cap);
+      return card;
     }
-    img.src = candidates[i++];
-  }
-
-  img.onerror = tryNext;
-  tryNext();
-
-  const cap = document.createElement("div");
-  cap.className = "cap";
-  cap.innerHTML = `
-    <p class="t">${escapeHtml(slide.title || "Memory " + (index+1))}</p>
-    <p class="d">${escapeHtml(slide.desc || "")}</p>
-  `;
-
-  card.appendChild(img);
-  card.appendChild(cap);
-  return card;
-}
 
     function render(){
       clearChildren(track);
@@ -627,28 +612,39 @@
     $("#pause").addEventListener("click", stop);
     $("#scrollToPhotos").addEventListener("click", () => $("#photos").scrollIntoView({behavior:"smooth"}));
 
-    // Hearts
-    const heartsLayer = $("#hearts");
+    // ✅ More hearts (denser) using 💖 emoji
     function spawnHeart(){
       if(!heartsOn) return;
+
       const h = document.createElement("div");
       h.className = "heart";
+      h.textContent = "💖";
+
       const left = Math.random() * 100;
-      const size = 10 + Math.random() * 14;
-      const dur = 5 + Math.random() * 6;
+      const size = 12 + Math.random() * 22;     // 12–34px
+      const dur  = 4 + Math.random() * 7;       // 4–11s
+
+      const dx = (Math.random() * 60 - 30).toFixed(0) + "px";
+      const rot = (Math.random() * 30 - 15).toFixed(0) + "deg";
+
       h.style.left = left + "vw";
-      h.style.bottom = "-20px";
-      h.style.width = size + "px";
-      h.style.height = size + "px";
+      h.style.bottom = "-30px";
+      h.style.fontSize = size + "px";
+      h.style.lineHeight = "1";
       h.style.animationDuration = dur + "s";
-      h.style.opacity = (0.10 + Math.random() * 0.18).toFixed(2);
-      h.style.boxShadow = (Math.random() > 0.6)
-        ? "0 0 24px rgba(123,220,255,.25)"
-        : "0 0 24px rgba(255,119,183,.25)";
+      h.style.opacity = (0.10 + Math.random() * 0.28).toFixed(2);
+      h.style.setProperty("--dx", dx);
+      h.style.setProperty("--rot", rot);
+
       heartsLayer.appendChild(h);
-      setTimeout(() => h.remove(), dur * 1000 + 200);
+      setTimeout(() => h.remove(), dur * 1000 + 300);
     }
-    setInterval(spawnHeart, 260);
+
+    // Denser: 1 heart every 110ms + random extra
+    setInterval(() => {
+      spawnHeart();
+      if(Math.random() > 0.55) spawnHeart();
+    }, 110);
 
     $("#toggleHearts").addEventListener("click", () => {
       heartsOn = !heartsOn;
